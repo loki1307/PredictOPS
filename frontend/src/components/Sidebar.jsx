@@ -3,10 +3,10 @@
  */
 
 import React from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import {
   Activity, Server, Bell, BarChart3, Zap, Shield,
-  AlertTriangle, CheckCircle, XCircle,
+  AlertTriangle, CheckCircle, XCircle, LogOut
 } from 'lucide-react'
 
 const NAV_ITEMS = [
@@ -36,6 +36,12 @@ function StatusDot({ status }) {
 
 export default function Sidebar({ servers = [], alertCount = 0, apiOnline = true }) {
   const location = useLocation()
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+    navigate('/login')
+  }
 
   return (
     <aside className="flex flex-col w-64 min-h-screen bg-dark-900 border-r border-white/5 shrink-0">
@@ -121,7 +127,14 @@ export default function Sidebar({ servers = [], alertCount = 0, apiOnline = true
 
       {/* ── Footer ───────────────────────────────────────────────────────── */}
       <div className="mt-auto px-4 py-4 border-t border-white/5">
-        <div className="flex items-center gap-2 text-xs text-slate-600">
+        <button 
+          onClick={handleLogout}
+          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 transition-colors mb-4"
+        >
+          <LogOut size={16} />
+          <span>Sign Out</span>
+        </button>
+        <div className="flex items-center gap-2 px-3 text-xs text-slate-600">
           <Shield size={12} />
           <span>PredictOps v1.0 · Academic Demo</span>
         </div>

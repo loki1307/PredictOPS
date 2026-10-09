@@ -26,6 +26,8 @@ import models  # noqa: F401  # type: ignore[import-not-found]
 from routers.metrics     import router as metrics_router, servers_router  # type: ignore[import-not-found]
 from routers.predictions import router as predictions_router  # type: ignore[import-not-found]
 from routers.alerts      import router as alerts_router  # type: ignore[import-not-found]
+from routers.auth        import router as auth_router, get_current_user
+from fastapi import Depends
 
 # ---------------------------------------------------------------------------
 # Logging
@@ -72,10 +74,11 @@ app.add_middleware(
 # ---------------------------------------------------------------------------
 # Mount routers
 # ---------------------------------------------------------------------------
-app.include_router(metrics_router)
-app.include_router(servers_router)
-app.include_router(predictions_router)
-app.include_router(alerts_router)
+app.include_router(auth_router)
+app.include_router(metrics_router, dependencies=[Depends(get_current_user)])
+app.include_router(servers_router, dependencies=[Depends(get_current_user)])
+app.include_router(predictions_router, dependencies=[Depends(get_current_user)])
+app.include_router(alerts_router, dependencies=[Depends(get_current_user)])
 
 
 # ---------------------------------------------------------------------------

@@ -10,6 +10,47 @@ const api = axios.create({
   timeout: 8000,
 })
 
+// Add a request interceptor to include the auth token
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// Add response interceptor to handle 401 Unauthorized
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      // Clear token and maybe reload or redirect
+      localStorage.removeItem('token');
+      // If we are not already on the login page, redirect
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
+// ── Auth ─────────────────────────────────────────────────────────────────
+export const loginUser = (username, password) => {
+  const params = new URLSearchParams();
+  params.append('username', username);
+  params.append('password', password);
+  return api.post('/auth/login', params, {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  }).then(r => r.data);
+};
+
+export const setupFirstUser = (username, email, password) => {
+  return api.post('/auth/setup', { username, email, password }).then(r => r.data);
+};
+
 // ── Servers ───────────────────────────────────────────────────────────────
 export const fetchServersSummary = () =>
   api.get('/servers/summary').then(r => r.data)
