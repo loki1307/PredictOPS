@@ -39,7 +39,20 @@ export default function LoginPage() {
         setIsLogin(true);
       }
     } catch (err) {
-      setError(err.response?.data?.detail || 'An error occurred');
+      let msg = 'An error occurred';
+      const detail = err.response?.data?.detail;
+      if (typeof detail === 'string') {
+        msg = detail;
+      } else if (Array.isArray(detail)) {
+        msg = detail.map((d) => d.msg || JSON.stringify(d)).join(', ');
+      } else if (detail) {
+        msg = JSON.stringify(detail);
+      } else if (err.message === 'Network Error') {
+        msg = 'Cannot reach backend server. Please verify the service is running.';
+      } else if (err.message) {
+        msg = err.message;
+      }
+      setError(msg);
     } finally {
       setLoading(false);
     }

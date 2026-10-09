@@ -18,5 +18,11 @@ COPY frontend/dist/ ./frontend/dist/
 # Expose port
 EXPOSE 8080
 
+# Create data directory for SQLite persistence
+RUN mkdir -p /data
+
+# Point SQLite at the persistent volume
+ENV DATABASE_URL="sqlite:////data/predictops.db"
+
 # Run from backend/ directory so bare imports (database, models) resolve
 CMD ["sh", "-c", "cd backend && uvicorn main:app --host 0.0.0.0 --port 8080"]

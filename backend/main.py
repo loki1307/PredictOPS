@@ -15,7 +15,7 @@ import os
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -97,8 +97,13 @@ _DIST = Path(__file__).parent.parent / "frontend" / "dist"
 if _DIST.is_dir():
     app.mount("/assets", StaticFiles(directory=str(_DIST / "assets")), name="assets")
 
+    # Known API path prefixes — never serve index.html for these
+    _API_PREFIXES = ("/auth", "/metrics", "/servers", "/predictions", "/alerts", "/health", "/docs", "/openapi.json")
+
     @app.get("/{full_path:path}", include_in_schema=False)
     def serve_spa(full_path: str):
         """Return index.html for all non-API routes (SPA client-side routing)."""
+        if full_path and any(full_path.startswith(p.lstrip("/")) for p in _API_PREFIXES):
+            raise HTTPException(status_code=404, detail="Not found")
         index = _DIST / "index.html"
         return FileResponse(str(index))

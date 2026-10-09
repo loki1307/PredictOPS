@@ -23,5 +23,5 @@ primary_region = 'sin'        # Singapore — closest to India
 
 [mounts]
   source      = "predictops_data"
-  destination = "/app/backend"
+  destination = "/data"
   initial_size = "1gb"

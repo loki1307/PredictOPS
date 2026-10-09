@@ -5,11 +5,14 @@ Creates the engine, session factory, and a declarative base that all
 ORM models inherit from.
 """
 
+import os
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
 
-# SQLite file is created next to this file automatically
-DATABASE_URL = "sqlite:///./predictops.db"
+# In production (Fly.io), use the persistent volume at /data/
+# Locally, fall back to a file next to this script.
+DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite:///./predictops.db")
 
 engine = create_engine(
     DATABASE_URL,
