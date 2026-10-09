@@ -75,10 +75,10 @@ app.add_middleware(
 # Mount routers
 # ---------------------------------------------------------------------------
 app.include_router(auth_router)
-app.include_router(metrics_router, dependencies=[Depends(get_current_user)])
-app.include_router(servers_router, dependencies=[Depends(get_current_user)])
-app.include_router(predictions_router, dependencies=[Depends(get_current_user)])
-app.include_router(alerts_router, dependencies=[Depends(get_current_user)])
+app.include_router(metrics_router)
+app.include_router(servers_router)
+app.include_router(predictions_router)
+app.include_router(alerts_router)
 
 
 # ---------------------------------------------------------------------------
