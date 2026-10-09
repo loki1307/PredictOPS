@@ -56,7 +56,7 @@ export default function LoginPage() {
             <div className="mx-auto w-16 h-16 bg-dark-800 rounded-full flex items-center justify-center border border-dark-700 shadow-inner mb-4">
               <Server className="w-8 h-8 text-blue-400" />
             </div>
-            <h1 className="text-2xl font-bold text-white tracking-tight">Hard Disk Analyzer</h1>
+            <h1 className="text-2xl font-bold text-white tracking-tight">PredictOps</h1>
             <p className="text-dark-400 mt-2 text-sm">
               {isLogin ? 'Sign in to access your dashboard' : 'Create the initial admin account'}
             </p>
