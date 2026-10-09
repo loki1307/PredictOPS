@@ -16,6 +16,8 @@ const NAV_ITEMS = [
 
 
 
+const SERVER_IDS = ['web-01', 'db-01', 'cache-01', 'app-01', 'queue-01', 'lb-01']
+
 const SERVER_ICONS = {
   'web-01':   '🌐',
   'db-01':    '🗄️',
@@ -37,6 +39,10 @@ function StatusDot({ status }) {
 export default function Sidebar({ servers = [], alertCount = 0, apiOnline = true }) {
   const location = useLocation()
   const navigate = useNavigate()
+
+  // Combine hardcoded servers with any new dynamic servers (like real_agent.py hostnames)
+  const dynamicSids = servers.map(s => s.server_id).filter(id => !SERVER_IDS.includes(id))
+  const allServerIds = [...SERVER_IDS, ...dynamicSids]
 
   return (
     <aside className="flex flex-col w-64 min-h-screen bg-dark-900 border-r border-white/5 shrink-0">
@@ -99,11 +105,8 @@ export default function Sidebar({ servers = [], alertCount = 0, apiOnline = true
       {/* ── Server List ──────────────────────────────────────────────────── */}
       <nav className="px-3 mt-6">
         <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-500 px-3 mb-2">Servers</p>
-        {servers.length === 0 && (
-          <p className="text-xs text-slate-500 px-3 py-1 italic">No servers active</p>
-        )}
-        {servers.map((srv) => {
-          const sid = srv.server_id
+        {allServerIds.map((sid) => {
+          const srv = servers.find(s => s.server_id === sid)
           const icon = SERVER_ICONS[sid] || '🖥️'
           return (
             <NavLink
@@ -118,7 +121,7 @@ export default function Sidebar({ servers = [], alertCount = 0, apiOnline = true
             >
               <span className="text-base w-5 text-center">{icon}</span>
               <span className="flex-1 font-mono text-xs truncate" title={sid}>{sid}</span>
-              <StatusDot status={srv.status} />
+              {srv && <StatusDot status={srv.status} />}
             </NavLink>
           )
         })}
