@@ -49,13 +49,17 @@ def get_real_metrics():
     current_io = psutil.disk_io_counters()
     current_time = time.time()
     
-    delta_time = current_time - last_time
-    delta_bytes = (current_io.read_bytes - last_io.read_bytes) + (current_io.write_bytes - last_io.write_bytes)
-    
-    # Assume 100MB/s is 100% disk IO for the sake of the dashboard
-    throughput_mb = (delta_bytes / delta_time) / (1024 * 1024) if delta_time > 0 else 0
-    disk_io_percent = min(100.0, (throughput_mb / 100.0) * 100.0)
-    
+    if current_io is not None and last_io is not None:
+        delta_time = current_time - last_time
+        delta_bytes = (current_io.read_bytes - last_io.read_bytes) + (current_io.write_bytes - last_io.write_bytes)
+        
+        # Assume 100MB/s is 100% disk IO for the sake of the dashboard
+        throughput_mb = (delta_bytes / delta_time) / (1024 * 1024) if delta_time > 0 else 0
+        disk_io_percent = min(100.0, (throughput_mb / 100.0) * 100.0)
+    else:
+        # Fallback if disk IO counters are unavailable
+        disk_io_percent = 0.0
+
     # Bouncy network latency if ping fails or is too fast
     if latency == 0.0:
         latency = 1.0 + (time.time() % 10)
