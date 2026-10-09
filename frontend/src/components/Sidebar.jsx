@@ -14,7 +14,7 @@ const NAV_ITEMS = [
   { to: '/alerts',  icon: Bell,          label: 'Alerts'      },
 ]
 
-const SERVER_IDS = ['web-01', 'db-01', 'cache-01', 'app-01', 'queue-01', 'lb-01']
+
 
 const SERVER_ICONS = {
   'web-01':   '🌐',
@@ -99,8 +99,12 @@ export default function Sidebar({ servers = [], alertCount = 0, apiOnline = true
       {/* ── Server List ──────────────────────────────────────────────────── */}
       <nav className="px-3 mt-6">
         <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-500 px-3 mb-2">Servers</p>
-        {SERVER_IDS.map((sid) => {
-          const srv = servers.find(s => s.server_id === sid)
+        {servers.length === 0 && (
+          <p className="text-xs text-slate-500 px-3 py-1 italic">No servers active</p>
+        )}
+        {servers.map((srv) => {
+          const sid = srv.server_id
+          const icon = SERVER_ICONS[sid] || '🖥️'
           return (
             <NavLink
               key={sid}
@@ -112,9 +116,9 @@ export default function Sidebar({ servers = [], alertCount = 0, apiOnline = true
                   : 'text-slate-400 hover:bg-white/5 hover:text-slate-200')
               }
             >
-              <span className="text-base w-5 text-center">{SERVER_ICONS[sid]}</span>
-              <span className="flex-1 font-mono text-xs">{sid}</span>
-              {srv && <StatusDot status={srv.status} />}
+              <span className="text-base w-5 text-center">{icon}</span>
+              <span className="flex-1 font-mono text-xs truncate" title={sid}>{sid}</span>
+              <StatusDot status={srv.status} />
             </NavLink>
           )
         })}
@@ -124,7 +128,7 @@ export default function Sidebar({ servers = [], alertCount = 0, apiOnline = true
       <div className="mt-auto px-4 py-4 border-t border-white/5">
         <div className="flex items-center gap-2 px-3 text-xs text-slate-600">
           <Shield size={12} />
-          <span>PredictOps v1.0 · Academic Demo</span>
+          <span>PredictOps v1.0 · Real-Time Monitoring</span>
         </div>
       </div>
     </aside>
