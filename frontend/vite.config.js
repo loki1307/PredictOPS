@@ -7,6 +7,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       // Proxy API calls to the FastAPI backend during development
+      '/auth':       { target: 'http://localhost:8000', changeOrigin: true },
       '/metrics':    { target: 'http://localhost:8000', changeOrigin: true },
       '/servers':    { target: 'http://localhost:8000', changeOrigin: true },
       '/predictions':{ target: 'http://localhost:8000', changeOrigin: true },

@@ -9,7 +9,7 @@ Write-Host ""
 
 # ── Backend API ──────────────────────────────────────────────────────────────
 Write-Host "  Launching Backend API at http://localhost:8000" -ForegroundColor Green
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$root'; python -m uvicorn backend.main:app --reload --port 8000"
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$root\backend'; python -m uvicorn main:app --reload --port 8000"
 
 Start-Sleep -Seconds 3
 
